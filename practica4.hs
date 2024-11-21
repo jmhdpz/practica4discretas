@@ -32,8 +32,6 @@ recorrido (Raiz x izq der) PosOrder = recorrido izq PosOrder ++ recorrido der Po
 niveles :: Arbol a -> [[a]]
 niveles ArbolVacio = []
 niveles (Raiz x ArbolVacio ArbolVacio) = [[x]]
-niveles (Raiz x izq ArbolVacio) = [x] : niveles izq
-niveles (Raiz x ArbolVacio der) = [x] : niveles der
 niveles (Raiz x izq der) = [x] : concatenar (niveles izq) (niveles der)
 
 concatenar :: [[a]] -> [[a]] -> [[a]]
@@ -44,16 +42,37 @@ concatenar (x:xs) (y:ys) = (x++y) : concatenar xs ys
 -------------------- EJERCICIO 6 --------------------
 minimo :: Ord a => Arbol a -> a
 minimo (Raiz x ArbolVacio ArbolVacio) = x
-minimo (Raiz x izq ArbolVacio) = min x (minimo izq)
-minimo (Raiz x ArbolVacio der) = min x (minimo der)
-minimo (Raiz x izq der) = min x (min (minimo izq) (minimo der))
+minimo (Raiz x izq ArbolVacio) = if x < minimo izq 
+                                  then x 
+                                  else minimo izq
+minimo (Raiz x ArbolVacio der) = if x < minimo der 
+                                  then x 
+                                  else minimo der
+minimo (Raiz x izq der) = if x < minimo izq 
+                             then if x < minimo der 
+                                   then x 
+                                   else minimo der
+                             else if minimo izq < minimo der 
+                                   then minimo izq 
+                                   else minimo der
 
 -------------------- EJERCICIO 7 --------------------
 maximo :: Ord a => Arbol a -> a
 maximo (Raiz x ArbolVacio ArbolVacio) = x
-maximo (Raiz x izq ArbolVacio) = max x (maximo izq)
-maximo (Raiz x ArbolVacio der) = max x (maximo der)
-maximo (Raiz x izq der) = max x (max (maximo izq) (maximo der))
+maximo (Raiz x izq ArbolVacio) = if x > maximo izq
+                                  then x
+                                  else maximo izq
+maximo (Raiz x ArbolVacio der) = if x > maximo der 
+                                  then x 
+                                  else maximo der
+maximo (Raiz x izq der) = if x > maximo izq 
+                             then if x > maximo der 
+                                  then x 
+                                  else maximo der
+                             else if maximo izq > maximo der 
+                                  then maximo izq 
+                                  else maximo der
+
 
 -------------------- EJERCICIO 8 --------------------
 eliminar :: Ord a => Arbol a -> a -> Arbol a
